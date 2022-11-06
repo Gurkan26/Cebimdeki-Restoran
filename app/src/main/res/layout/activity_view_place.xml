@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context=".ui.details.ViewPlace">
+
+
+    <TextView
+        android:id="@+id/tbName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textAppearance="@style/title"
+        app:layout_constraintEnd_toEndOf="@+id/mapDirection"
+        app:layout_constraintStart_toStartOf="@+id/mapDirection"
+        app:layout_constraintTop_toBottomOf="@+id/mapDirection"
+        app:textAllCaps="false"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tbAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAppearance="@style/address"
+        app:layout_constraintEnd_toEndOf="@+id/tbName"
+        app:layout_constraintStart_toStartOf="@+id/tbName"
+        app:layout_constraintTop_toBottomOf="@+id/tbName"
+        tools:ignore="MissingConstraints" />
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="240dp"
+        android:layout_height="54dp"
+        android:isIndicator="true"
+        app:layout_constraintBottom_toTopOf="@+id/statusImg"
+        app:layout_constraintEnd_toEndOf="@+id/mapDirection"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="@+id/mapDirection"
+        app:layout_constraintTop_toBottomOf="@+id/tbAddress"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/statusImg"
+        android:layout_width="128dp"
+        android:layout_height="94dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ratingBar"
+        app:layout_constraintStart_toStartOf="@+id/ratingBar"
+        tools:ignore="MissingConstraints"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <fragment
+        android:id="@+id/mapDirection"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="385dp"
+        android:layout_height="294dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

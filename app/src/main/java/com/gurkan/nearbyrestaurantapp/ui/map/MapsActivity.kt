@@ -1,73 +1,112 @@
 package com.gurkan.nearbyrestaurantapp.ui.map
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
-import com.gurkan.nearbyrestaurantapp.R
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
-
+import com.google.android.gms.maps.model.*
+import com.gurkan.nearbyrestaurantapp.R
+import com.gurkan.nearbyrestaurantapp.ui.details.ViewPlace
 import com.gurkan.nearbyrestaurantapp.databinding.ActivityMapsBinding
+import com.gurkan.nearbyrestaurantapp.model.Result
+import com.gurkan.nearbyrestaurantapp.ui.recyclerView.RecyclerViewAdapter
+import kotlin.collections.ArrayList
+import androidx.appcompat.widget.SearchView
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FetchPhotoRequest
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.gurkan.nearbyrestaurantapp.ui.recyclerView.placesClient
+import java.util.*
 
-import java.lang.StringBuilder
 
 private lateinit var binding: ActivityMapsBinding
 private lateinit var mMap: GoogleMap
 private lateinit var mLastLocation: Location
+
 @SuppressLint("StaticFieldLeak")
 private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+private var mMarker: Marker? = null
+private lateinit var rvAdapter: RecyclerViewAdapter
+lateinit var placeList: ArrayList<Result>
+
+//Location
+private lateinit var locationRequest: LocationRequest
+private lateinit var locationCallback: LocationCallback
+
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
-    private var latitude: Double = 0.toDouble()  // Enlem
-    private var longitude: Double = 0.toDouble() // Boylam
-    private var mMarker: Marker? = null
-
-    //Location
-    private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: LocationCallback
-
-    val viewModel: MapsViewModel by viewModels()
+    private val viewModel: MapsViewModel by viewModels()
 
     companion object {
         private const val MY_PERMISSION_CODE: Int = 1000
+        const val MIN_DISTANCE = 150
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+
+        //PLACE INITIALIZE
+
+        Places.initialize(this, getString(R.string.api_key))
+        placesClient = Places.createClient(this)
+        super.onCreate(savedInstanceState)
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+
         //Map Kullanma İzni
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkLocationPermission()) {
-                fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
+
+                fusedLocationProviderClient =
+                    LocationServices.getFusedLocationProviderClient(this)
+                buildLocationRequest()
+                buildLocationCallBack()
+
+                fusedLocationProviderClient.requestLocationUpdates(
+                    locationRequest,
+                    locationCallback,
+                    Looper.myLooper()
+                )
+
+
+            } else {
+
+                fusedLocationProviderClient =
+                    LocationServices.getFusedLocationProviderClient(this)
+
+                buildLocationRequest()
+                buildLocationCallBack()
 
                 fusedLocationProviderClient.requestLocationUpdates(
                     locationRequest,
@@ -77,50 +116,110 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
             }
-        } else {
-            buildLocationRequest()
-            buildLocationCallBack()
 
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
-            fusedLocationProviderClient.requestLocationUpdates(
-                locationRequest,
-                locationCallback,
-                Looper.myLooper()
-            )
         }
+        initRecyclerView()
+        viewModel.mapsResponse.observe(this, Observer {
+            if (it != null) {
+                placeList = it.results //filter için.
+                //    fusedLocationProviderClient.removeLocationUpdates(locationCallback)
 
+                rvAdapter.setPlacesList(it.results)
+                rvAdapter.notifyDataSetChanged()
+
+                rvAdapter.setOnClickListener(object : RecyclerViewAdapter.onItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        var destLocationLat =
+                            (it.results[position].geometry.location.lat)
+                        var destLocationLong =
+                            (it.results[position].geometry.location.lng)
+                        var lastLocationLat =
+                            mLastLocation.latitude
+                        var lastLocationLong = mLastLocation.longitude
+
+                        val intent = Intent(this@MapsActivity, ViewPlace::class.java)
+                        intent.putExtra("name", it.results[position].name)
+                        intent.putExtra("rating", it.results[position].rating)
+                        intent.putExtra("address", it.results[position].vicinity)
+                        intent.putExtra("b_status", it.results[position].business_status)
+                        intent.putExtra("destLocationLat", destLocationLat)
+                        intent.putExtra("destLocationLong", destLocationLong)
+                        intent.putExtra("lastLocationLat", lastLocationLat)
+                        intent.putExtra("lastLocationLong", lastLocationLong)
+                        startActivity(intent)
+
+
+                    }
+
+                })
+
+
+            }
+
+
+        })
 
     }
 
 
-    private fun restaurantNearby() {
-        //Clear Map
-        mMap.clear()
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        val inflater = menuInflater
+        inflater.inflate(R.menu.search_menu, menu)
+        val searchItem: MenuItem = menu!!.findItem(R.id.actionSearch)
+        var searchView: SearchView = searchItem.actionView as SearchView
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(text: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(text: String?): Boolean {
+                if (text != null) {
+                    filter(text)
+                }
+                return false
+            }
+        })
+        return true
+    }
+
+    private fun filter(text: String) {
+        val filteredList: ArrayList<Result> = ArrayList()
+
+        for (item in placeList) {
+            if (item.name.toLowerCase().trim().contains(text.toLowerCase().trim())) {
+
+                filteredList.add(item)
+            }
+        }
+        if (filteredList.isEmpty()) {
+            Toast.makeText(this, "Veri Bulunamadı..", Toast.LENGTH_SHORT).show()
+        } else {
+            rvAdapter.filterList(filteredList)
+        }
+    }
+
+    private fun initRecyclerView() {
+        binding.rvRestaurant.layoutManager = LinearLayoutManager(this)
+        rvAdapter = RecyclerViewAdapter()
+        binding.rvRestaurant.adapter = rvAdapter
+        placeList = ArrayList<Result>()
+
+    }
+
+
+    private fun restaurantNearby(latitude: Double, longitude: Double) {
         // build Request
-        val type = "restaurant"
-        val url = ("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="
-                +latitude+","+longitude+
-                "&radius="+10000+"&type="+type+"&key="+resources.getString(R.string.api_key))
-
-        viewModel.makeApiCall(url, latitude, longitude)
-
+        val url =
+            ("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="
+                    + latitude + "," + longitude +
+                    "&radius=" + 1000 +
+                    "&type=restaurant" + "&key=" + resources.getString(R.string.api_key))
+        viewModel.makeApiCall(url)
     }
 
-   /* private fun getUrl(latitude: Double, longitude: Double, type: String): String {
-        val googlePlaceUrl =
-            StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json")
-        googlePlaceUrl.append("?location=$latitude,$longitude")
-        googlePlaceUrl.append("&radius=5000") // 5km
-        googlePlaceUrl.append("&type=${type}")
-        googlePlaceUrl.append("&keyword=cruise")
-        googlePlaceUrl.append("&key=AIzaSyBQ2tXz0E6sUrRUrZtzhBZiF4dmspgMFW0")
-
-        Log.d("URL_DEBUG", googlePlaceUrl.toString())
-
-        return googlePlaceUrl.toString()
-
-    }*/
 
     private fun buildLocationCallBack() {
         locationCallback = object : LocationCallback() {
@@ -130,8 +229,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 if (mMarker != null) {
                     mMarker!!.remove()
                 }
-                latitude = mLastLocation.latitude
-                longitude = mLastLocation.longitude
+                val latitude = mLastLocation.latitude
+                val longitude = mLastLocation.longitude
+
+                restaurantNearby(latitude, longitude)
 
                 val latLng = LatLng(latitude, longitude)
                 val markerOptions = MarkerOptions()
@@ -140,11 +241,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                 mMarker = mMap.addMarker(markerOptions)
 
-                // Move Map
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(11f))
+                val cameraPosition = CameraPosition.builder()
+                    .target(latLng)
+                    .zoom(17f)
+                    .bearing(90f)
+                    .tilt(40f)
+                    .build()
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+
             }
+
         }
+
     }
 
     private fun buildLocationRequest() {
@@ -221,12 +329,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        viewModel.mapsResponse.observe(this, Observer {
-            if (it != null) {
-                restaurantNearby()
-            }
 
-        })
         //Init Google Play Services
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(
@@ -243,4 +346,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // Zoom Control
         mMap.uiSettings.isZoomControlsEnabled = true
     }
+
+
 }
