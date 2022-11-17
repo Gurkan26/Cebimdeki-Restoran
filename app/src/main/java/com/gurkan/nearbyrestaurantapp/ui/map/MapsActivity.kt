@@ -31,13 +31,12 @@ import com.gurkan.nearbyrestaurantapp.ui.recyclerView.RecyclerViewAdapter
 import kotlin.collections.ArrayList
 import androidx.appcompat.widget.SearchView
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FetchPhotoRequest
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
-import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.gurkan.nearbyrestaurantapp.ui.recyclerView.placesClient
-import java.util.*
 
 
 private lateinit var binding: ActivityMapsBinding
@@ -130,24 +129,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 rvAdapter.setOnClickListener(object : RecyclerViewAdapter.onItemClickListener {
                     override fun onItemClick(position: Int) {
-                        var destLocationLat =
+                        val destLocationLat =
                             (it.results[position].geometry.location.lat)
-                        var destLocationLong =
+                        val destLocationLong =
                             (it.results[position].geometry.location.lng)
-                        var lastLocationLat =
+                        val lastLocationLat =
                             mLastLocation.latitude
-                        var lastLocationLong = mLastLocation.longitude
+                        val lastLocationLong = mLastLocation.longitude
 
-                        val intent = Intent(this@MapsActivity, ViewPlace::class.java)
-                        intent.putExtra("name", it.results[position].name)
-                        intent.putExtra("rating", it.results[position].rating)
-                        intent.putExtra("address", it.results[position].vicinity)
-                        intent.putExtra("b_status", it.results[position].business_status)
-                        intent.putExtra("destLocationLat", destLocationLat)
-                        intent.putExtra("destLocationLong", destLocationLong)
-                        intent.putExtra("lastLocationLat", lastLocationLat)
-                        intent.putExtra("lastLocationLong", lastLocationLong)
-                        startActivity(intent)
+                        var placeId = it.results[position].place_id
+                        /*     val intent = Intent(this@MapsActivity, ViewPlace::class.java)
+                           /*  intent.putExtra("name", it.results[position].name)
+                             intent.putExtra("rating", it.results[position].rating)
+                             intent.putExtra("address", it.results[position].vicinity)
+                             intent.putExtra("b_status", it.results[position].business_status)*/
+                             intent.putExtra("destLocationLat", destLocationLat)
+                             intent.putExtra("destLocationLong", destLocationLong)
+                             intent.putExtra("lastLocationLat", lastLocationLat)
+                             intent.putExtra("lastLocationLong", lastLocationLong)*/
+                        //  startActivity(intent)
+                        placeDetails(placeId,destLocationLat,destLocationLong,lastLocationLat,lastLocationLong)
 
 
                     }
@@ -162,6 +163,42 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
+    fun placeDetails(
+        placeId: String,
+        destLocationLat: Double,
+        destLocationLong: Double,
+        lastLocationLat: Double,
+        lastLocationLong: Double,) {
+
+        val placeFields = listOf(Place.Field.ID, Place.Field.NAME,Place.Field.ADDRESS,Place.Field.BUSINESS_STATUS,Place.Field.PHONE_NUMBER,Place.Field.RATING)
+
+        val request = FetchPlaceRequest.newInstance(placeId, placeFields)
+
+        placesClient.fetchPlace(request)
+            .addOnSuccessListener { response: FetchPlaceResponse ->
+                val place = response.place
+
+                val intent = Intent(this@MapsActivity, ViewPlace::class.java)
+                intent.putExtra("name", place.name)
+                place.rating?.let { intent.putExtra("rating", it) }
+                intent.putExtra("address", place.address)
+                intent.putExtra("b_status", place.businessStatus.name)
+                intent.putExtra("placeNumber", place.phoneNumber)
+                intent.putExtra("destLocationLat", destLocationLat)
+                intent.putExtra("destLocationLong", destLocationLong)
+                intent.putExtra("lastLocationLat", lastLocationLat)
+                intent.putExtra("lastLocationLong", lastLocationLong)
+                startActivity(intent)
+
+            }.addOnFailureListener { exception: Exception ->
+                if (exception is ApiException) {
+                    val statusCode = exception.statusCode
+                    TODO("Handle error with given status code")
+                }
+            }
+
+
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
