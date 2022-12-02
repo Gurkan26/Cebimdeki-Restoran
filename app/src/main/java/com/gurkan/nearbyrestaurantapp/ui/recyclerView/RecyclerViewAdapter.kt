@@ -2,17 +2,17 @@ package com.gurkan.nearbyrestaurantapp.ui.recyclerView
 
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.*
+import com.gurkan.nearbyrestaurantapp.R
 import com.gurkan.nearbyrestaurantapp.databinding.ItemsBinding
 import com.gurkan.nearbyrestaurantapp.model.Result
-import kotlin.random.Random
 
 
 lateinit var placesClient: PlacesClient
@@ -43,6 +43,8 @@ class RecyclerViewAdapter :
 
     fun setOnClickListener(listener: onItemClickListener) {
         mListener = listener
+
+
     }
 
 
@@ -74,16 +76,21 @@ class RecyclerViewAdapter :
         listener: onItemClickListener
     ) :
         RecyclerView.ViewHolder(binding.root) {
-       // private val rnd = Random(1000)
+        // private val rnd = Random(1000)
         fun bind(data: Result) {
 
             binding.place = data
             binding.ratingTextView.text = data.rating.toString()
             getPhoto(data.place_id, binding.thubmImage)
-
-        /*    val color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
-            binding.cardView.setBackgroundColor(color)*/
+            if (data.business_status == "CLOSED_TEMPORARILY") {
+                binding.placeControl.setImageResource(R.drawable.closepng)
+            } else {
+                binding.placeControl.setImageResource(R.drawable.openpng)
+            }
+            /*    val color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
+                binding.cardView.setBackgroundColor(color)*/
             binding.executePendingBindings()
+
 
         }
 
@@ -92,6 +99,7 @@ class RecyclerViewAdapter :
 
             itemView.setOnClickListener {
                 listener.onItemClick(adapterPosition)
+
 
             }
 

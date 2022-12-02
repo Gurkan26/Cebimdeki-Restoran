@@ -5,10 +5,13 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
+import android.os.Looper
 import android.widget.ImageView
 import android.widget.RatingBar
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -24,6 +27,9 @@ import com.gurkan.nearbyrestaurantapp.model.GoogleMapDTO
 import com.gurkan.nearbyrestaurantapp.ui.map.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
+
+private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
 
 class ViewPlace : AppCompatActivity(),
     OnMapReadyCallback {
@@ -50,14 +56,11 @@ class ViewPlace : AppCompatActivity(),
         var ratingBarSet: Double? = 0.0
 
         val rating: RatingBar = findViewById(R.id.ratingBar)
-        val status: ImageView = findViewById(R.id.statusImg)
-        var statusValue = ""
 
 
         val bundle: Bundle? = intent.extras
         binding.tbName.text = bundle!!.getString("name")
         ratingBarSet = bundle.getDouble("rating")
-        statusValue = bundle.getString("b_status").toString()
         binding.tbAddress.text = bundle.getString("address")
         var phoneNumber = bundle.getString("placeNumber")
         destLocLat = bundle.getDouble("destLocationLat")
@@ -67,6 +70,8 @@ class ViewPlace : AppCompatActivity(),
         rating.rating = ratingBarSet.toFloat()
         destLatLng = LatLng(destLocLat, destLocLng)
         lastLatLng = LatLng(lastLocLat, lastLocLng)
+
+
 
 
         mapFragment.getMapAsync {
@@ -92,22 +97,9 @@ class ViewPlace : AppCompatActivity(),
             startActivity(intent)
         }
 
-        statusControl(statusValue, status) // Dükkan durum kontrol
-
 
     }
 
-
-    private fun statusControl(statusValue: String, status: ImageView) {
-        if (statusValue == "CLOSED_TEMPORARILY") {
-            Glide.with(this).load(R.drawable.closed).into(status)
-
-        } else {
-            Glide.with(this).load(R.drawable.open).into(status)
-
-
-        }
-    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap

@@ -1,4 +1,4 @@
-package com.gurkan.nearbyrestaurantapp.api
+package com.gurkan.nearbyrestaurantapp.ui.api
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

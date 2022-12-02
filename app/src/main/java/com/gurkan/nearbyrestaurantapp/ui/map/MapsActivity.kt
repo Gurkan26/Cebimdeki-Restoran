@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.os.FileUtils
 import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
@@ -13,30 +14,31 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.gurkan.nearbyrestaurantapp.R
-import com.gurkan.nearbyrestaurantapp.ui.details.ViewPlace
-import com.gurkan.nearbyrestaurantapp.databinding.ActivityMapsBinding
-import com.gurkan.nearbyrestaurantapp.model.Result
-import com.gurkan.nearbyrestaurantapp.ui.recyclerView.RecyclerViewAdapter
-import kotlin.collections.ArrayList
-import androidx.appcompat.widget.SearchView
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
+import com.gurkan.nearbyrestaurantapp.R
+import com.gurkan.nearbyrestaurantapp.databinding.ActivityMapsBinding
+import com.gurkan.nearbyrestaurantapp.model.Result
+import com.gurkan.nearbyrestaurantapp.ui.details.ViewPlace
+import com.gurkan.nearbyrestaurantapp.ui.recyclerView.RecyclerViewAdapter
 import com.gurkan.nearbyrestaurantapp.ui.recyclerView.placesClient
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 private lateinit var binding: ActivityMapsBinding
@@ -44,7 +46,7 @@ private lateinit var mMap: GoogleMap
 private lateinit var mLastLocation: Location
 
 @SuppressLint("StaticFieldLeak")
-private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 private var mMarker: Marker? = null
 private lateinit var rvAdapter: RecyclerViewAdapter
 lateinit var placeList: ArrayList<Result>
@@ -123,12 +125,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             if (it != null) {
                 placeList = it.results //filter için.
                 //    fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-
-                rvAdapter.setPlacesList(it.results)
+                rvAdapter.setPlacesList(placeList)
                 rvAdapter.notifyDataSetChanged()
 
                 rvAdapter.setOnClickListener(object : RecyclerViewAdapter.onItemClickListener {
                     override fun onItemClick(position: Int) {
+
+
+                        val placeId = it.results[position].place_id
+
                         val destLocationLat =
                             (it.results[position].geometry.location.lat)
                         val destLocationLong =
@@ -137,18 +142,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                             mLastLocation.latitude
                         val lastLocationLong = mLastLocation.longitude
 
-                        var placeId = it.results[position].place_id
-                        /*     val intent = Intent(this@MapsActivity, ViewPlace::class.java)
-                           /*  intent.putExtra("name", it.results[position].name)
-                             intent.putExtra("rating", it.results[position].rating)
-                             intent.putExtra("address", it.results[position].vicinity)
-                             intent.putExtra("b_status", it.results[position].business_status)*/
-                             intent.putExtra("destLocationLat", destLocationLat)
-                             intent.putExtra("destLocationLong", destLocationLong)
-                             intent.putExtra("lastLocationLat", lastLocationLat)
-                             intent.putExtra("lastLocationLong", lastLocationLong)*/
-                        //  startActivity(intent)
-                        placeDetails(placeId,destLocationLat,destLocationLong,lastLocationLat,lastLocationLong)
+                        placeDetails(
+                            placeId,
+                            destLocationLat,
+                            destLocationLong,
+                            lastLocationLat,
+                            lastLocationLong
+                        )
 
 
                     }
@@ -168,9 +168,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         destLocationLat: Double,
         destLocationLong: Double,
         lastLocationLat: Double,
-        lastLocationLong: Double,) {
+        lastLocationLong: Double,
+    ) {
 
-        val placeFields = listOf(Place.Field.ID, Place.Field.NAME,Place.Field.ADDRESS,Place.Field.BUSINESS_STATUS,Place.Field.PHONE_NUMBER,Place.Field.RATING)
+        val placeFields = listOf(
+            Place.Field.ID,
+            Place.Field.NAME,
+            Place.Field.ADDRESS,
+            Place.Field.BUSINESS_STATUS,
+            Place.Field.PHONE_NUMBER,
+            Place.Field.RATING
+        )
 
         val request = FetchPlaceRequest.newInstance(placeId, placeFields)
 
@@ -202,10 +210,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
+
         val inflater = menuInflater
         inflater.inflate(R.menu.search_menu, menu)
         val searchItem: MenuItem = menu!!.findItem(R.id.actionSearch)
-        var searchView: SearchView = searchItem.actionView as SearchView
+        val searchView: SearchView = searchItem.actionView as SearchView
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(text: String?): Boolean {
@@ -219,8 +228,46 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 return false
             }
         })
+
         return true
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        return when (item.itemId) {
+            R.id.filterMenuRating3 -> {
+
+                filterRating()
+                true
+
+            }
+            R.id.filterMenuAlfabe -> {
+                rvAdapter.filterList(filterAlf())
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun filterAlf(): ArrayList<Result> {
+
+        return ArrayList(placeList.sortedBy { it.name })
+    }
+
+    private fun filterRating() {
+        val filteredList: ArrayList<Result> = ArrayList()
+
+        for (item in placeList) {
+            if (item.rating >= 3.0) {
+                filteredList.add(item)
+            }
+        }
+        rvAdapter.filterList(ArrayList(filteredList.sortedBy { it.rating }))
+
+
+    }
+
 
     private fun filter(text: String) {
         val filteredList: ArrayList<Result> = ArrayList()
@@ -236,6 +283,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         } else {
             rvAdapter.filterList(filteredList)
         }
+
     }
 
     private fun initRecyclerView() {

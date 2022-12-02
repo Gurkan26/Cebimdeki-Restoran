@@ -12,9 +12,10 @@
         android:id="@+id/tbName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="36dp"
         android:textAppearance="@style/title"
         app:layout_constraintEnd_toEndOf="@+id/mapDirection"
+        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="@+id/mapDirection"
         app:layout_constraintTop_toBottomOf="@+id/mapDirection"
         app:textAllCaps="false"
@@ -35,46 +36,46 @@
         android:id="@+id/ratingBar"
         android:layout_width="240dp"
         android:layout_height="54dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="88dp"
         android:isIndicator="true"
         app:layout_constraintEnd_toEndOf="@+id/mapDirection"
-        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="@+id/mapDirection"
         app:layout_constraintTop_toBottomOf="@+id/callBtn"
         tools:ignore="MissingConstraints" />
 
-    <ImageView
-        android:id="@+id/statusImg"
-        android:layout_width="109dp"
-        android:layout_height="78dp"
-        android:layout_marginBottom="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/ratingBar"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="@+id/ratingBar"
-        app:layout_constraintTop_toBottomOf="@+id/ratingBar"
-        tools:ignore="MissingConstraints"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <fragment
+    <com.google.android.gms.maps.MapView
         android:id="@+id/mapDirection"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="388dp"
+        android:layout_width="match_parent"
         android:layout_height="253dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.304"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
-    <Button
+    <at.markushi.ui.CircleButton
         android:id="@+id/callBtn"
-        android:layout_width="64dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="20dp"
-
-        android:background="@drawable/ic_baseline_call_24"
+        android:layout_width="76dp"
+        android:layout_height="69dp"
+        android:layout_marginTop="88dp"
+        android:src="@drawable/ic_baseline_call_24"
+        app:cb_color="#69C630"
+        app:cb_pressedRingWidth="8dip"
         app:layout_constraintEnd_toEndOf="@+id/ratingBar"
         app:layout_constraintStart_toStartOf="@+id/ratingBar"
         app:layout_constraintTop_toBottomOf="@+id/tbAddress" />
+
+    <Button
+        android:id="@+id/btnDegerlendir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Değerlendir"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ratingBar"
+        app:layout_constraintStart_toStartOf="@+id/ratingBar"
+        app:layout_constraintTop_toBottomOf="@+id/ratingBar"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
