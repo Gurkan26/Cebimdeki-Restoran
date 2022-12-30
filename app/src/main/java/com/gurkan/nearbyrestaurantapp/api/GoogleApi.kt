@@ -1,4 +1,4 @@
-package com.gurkan.nearbyrestaurantapp.ui.api
+package com.gurkan.nearbyrestaurantapp.api
 
 import com.gurkan.nearbyrestaurantapp.model.MyPlaces
 import retrofit2.Call

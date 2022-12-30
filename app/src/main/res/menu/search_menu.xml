@@ -16,13 +16,15 @@
     <group>
         <item
             android:id="@+id/filterMenuRating3"
-            android:icon="@drawable/ic_baseline_filter_alt_24"
-            android:title="3 yıldız ve üzeri" />
+            android:icon="@drawable/three_stars"
+            android:title=""
+            app:showAsAction="ifRoom|withText" />
+
 
         <item
             android:id="@+id/filterMenuAlfabe"
-            android:icon="@drawable/ic_baseline_filter_alt_24"
-            android:title="Alfabetik" />
+            android:title="A-z"
+            app:showAsAction="ifRoom|withText" />
     </group>
 
 

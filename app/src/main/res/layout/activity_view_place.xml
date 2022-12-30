@@ -4,31 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
+    android:background="@drawable/background"
+    android:focusableInTouchMode="true"
     tools:context=".ui.details.ViewPlace">
 
 
     <TextView
         android:id="@+id/tbName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_width="336dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="25dp"
+        android:textAlignment="center"
         android:textAppearance="@style/title"
-        app:layout_constraintEnd_toEndOf="@+id/mapDirection"
-        app:layout_constraintHorizontal_bias="0.51"
-        app:layout_constraintStart_toStartOf="@+id/mapDirection"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mapDirection"
         app:textAllCaps="false"
         tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/tbAddress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="319dp"
+        android:layout_height="50dp"
         android:layout_marginTop="8dp"
+        android:textAlignment="center"
         android:textAppearance="@style/address"
-        app:layout_constraintEnd_toEndOf="@+id/tbName"
-        app:layout_constraintStart_toStartOf="@+id/tbName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tbName"
         tools:ignore="MissingConstraints" />
 
@@ -36,21 +40,22 @@
         android:id="@+id/ratingBar"
         android:layout_width="240dp"
         android:layout_height="54dp"
-        android:layout_marginTop="88dp"
-        android:isIndicator="true"
-        app:layout_constraintEnd_toEndOf="@+id/mapDirection"
+        android:layout_marginTop="16dp"
+        android:isIndicator="false"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="@+id/mapDirection"
-        app:layout_constraintTop_toBottomOf="@+id/callBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etComment"
         tools:ignore="MissingConstraints" />
 
-    <com.google.android.gms.maps.MapView
+    <fragment
         android:id="@+id/mapDirection"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="253dp"
+        android:layout_height="200dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.304"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
@@ -59,23 +64,72 @@
         android:id="@+id/callBtn"
         android:layout_width="76dp"
         android:layout_height="69dp"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="12dp"
         android:src="@drawable/ic_baseline_call_24"
         app:cb_color="#69C630"
         app:cb_pressedRingWidth="8dip"
-        app:layout_constraintEnd_toEndOf="@+id/ratingBar"
-        app:layout_constraintStart_toStartOf="@+id/ratingBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tbAddress" />
 
     <Button
         android:id="@+id/btnDegerlendir"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Değerlendir"
+        android:layout_marginTop="1dp"
+        android:background="@color/purple_200"
+        android:text="@string/view_place_degerlendir"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/ratingBar"
-        app:layout_constraintStart_toStartOf="@+id/ratingBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.181"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ratingBar"
+        app:layout_constraintVertical_bias="0.152"
         tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/etComment"
+        android:layout_width="332dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/input"
+        android:gravity="top|start"
+        android:hint="@string/view_place_yorum_hint"
+        android:inputType="textMultiLine"
+        android:maxLines="5"
+        android:minLines="3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/callBtn"
+        tools:ignore="MissingConstraints" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:menu="@menu/my_menu" />
+
+    <Button
+        android:id="@+id/btnPlaceComments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/purple_200"
+        android:text="@string/view_place_yorumlar"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/btnDegerlendir"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnDegerlendir"
+        app:layout_constraintTop_toTopOf="@+id/btnDegerlendir"
+        tools:ignore="MissingConstraints" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

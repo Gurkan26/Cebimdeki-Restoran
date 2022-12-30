@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 import com.gurkan.nearbyrestaurantapp.model.MyPlaces
-import com.gurkan.nearbyrestaurantapp.ui.api.RetrofitClient
+import com.gurkan.nearbyrestaurantapp.api.RetrofitClient
 import com.gurkan.nearbyrestaurantapp.model.Result
-import com.gurkan.nearbyrestaurantapp.ui.recyclerView.RecyclerViewAdapter
+import com.gurkan.nearbyrestaurantapp.ui.map.recyclerView.RecyclerViewAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

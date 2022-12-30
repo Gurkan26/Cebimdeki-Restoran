@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav_profile"
+    app:startDestination="@id/fragmentProfilLogout">
+
+    <fragment
+        android:id="@+id/fragmentProfilLogout"
+        android:name="com.gurkan.nearbyrestaurantapp.ui.profile.logout.FragmentProfilLogout"
+        android:label="fragment_profil_logout"
+        tools:layout="@layout/fragment_profil_logout" >
+        <action
+            android:id="@+id/action_fragmentProfilLogout_to_fragmentUpdate"
+            app:destination="@id/fragmentUpdate" />
+        <action
+            android:id="@+id/action_fragmentProfilLogout_to_fragmentUserComment"
+            app:destination="@id/fragmentUserComment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentUpdate"
+        android:name="com.gurkan.nearbyrestaurantapp.ui.profile.update.FragmentUpdate"
+        android:label="fragment_update"
+        tools:layout="@layout/fragment_update" />
+    <fragment
+        android:id="@+id/fragmentUserComment"
+        android:name="com.gurkan.nearbyrestaurantapp.ui.profile.userComment.FragmentUserComment"
+        android:label="fragment_user_comments"
+        tools:layout="@layout/fragment_user_comments" />
+</navigation>

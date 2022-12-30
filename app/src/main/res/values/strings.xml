@@ -1,7 +1,59 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Nearby Restaurant</string>
     <string name="title_activity_maps">Nearby Restaurant</string>
     <string name="api_key">AIzaSyBQ2tXz0E6sUrRUrZtzhBZiF4dmspgMFW0</string>
     <string name="hello_fragment">hello_fragment</string>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="title_activity_comment" translatable="false">CommentActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label" translatable="false">First Fragment</string>
+    <string name="second_fragment_label" translatable="false">Second Fragment</string>
+    <string name="next" translatable="false">Next</string>
+    <string name="previous" translatable="false">Previous</string>
+
+    <string name="hello_first_fragment" translatable="false">Hello first fragment</string>
+    <string name="hello_second_fragment" translatable="false">Hello second fragment. Arg: %1$s</string>
+    <string name="loginButton" tools:ignore="MissingTranslation"> Login</string>
+    <string name="updateText" tools:ignore="MissingTranslation"> Update </string>
+    <string name="registerSignUp" tools:ignore="MissingTranslation">Sign Up</string>
+    <string name="registerDescription" tools:ignore="MissingTranslation">Login or sign up to continue using our app.</string>
+    <string name="forgot_pass" tools:ignore="MissingTranslation">Forgot Password?</string>
+    <string name="already_hav" tools:ignore="MissingTranslation">Already have an account? Sign in now</string>
+    <string name="full_name" tools:ignore="MissingTranslation">FullName</string>
+    <string name="email_address" tools:ignore="MissingTranslation">Email Address</string>
+    <string name="password_hint" tools:ignore="MissingTranslation">Password</string>
+    <string name="sign_up" tools:ignore="MissingTranslation">" Forgot Password?"</string>
+    <string name="login_or_si" tools:ignore="MissingTranslation">Confirm your email and we will send\n the instructions.</string>
+    <string name="loginDescription" tools:ignore="MissingTranslation">Login or sign up to continue using our app.</string>
+    <string name="new_user_si" tools:ignore="MissingTranslation">New user? Sign up now</string>
+    <string name="newPassword_hint" tools:ignore="MissingTranslation">New Password</string>
+    <string name="retyPassword_hint" tools:ignore="MissingTranslation">Retype New Password</string>
+    <string name="save" tools:ignore="MissingTranslation">Save</string>
+    <string name="forgot_pass_back_login">Back to Home Screen</string>
+    <string name="forgot_pass_reset_pass">Reset Password</string>
+    <string name="view_place_yorumlar">Comments</string>
+    <string name="view_place_yorum_hint">Write your comment here..</string>
+    <string name="view_place_degerlendir">Rate</string>
+    <string name="profil_bilgi">Your Profile Information</string>
+    <string name="profile_cikis">Log out</string>
+    <string name="profil_bilgi_guncelle">Update Information</string>
+    <string name="profile_mail_adresi">Email address</string>
+    <string name="updateFullNameSuccess">FullName successfully updated</string>
+    <string name="updatePasswordError">Password could not be updated.</string>
+    <string name="updatePasswordSucc">Password successfully updated</string>
+    <string name="updateEmailError">"Email could not be updated. "</string>
+    <string name="updateEmailSucc">Email successfully updated</string>
+    <string name="forgotPassCannotEmpty">Cannot be Empty.</string>
+    <string name="forgotPassResetLink">Password reset link has been sent.</string>
+    <string name="forgotPassSendFailed">Sending failed.</string>
+    <string name="loginNotEmpty">Cannot be blank</string>
+    <string name="loginTryAgain">Incorrect Input. Try again.</string>
+    <string name="viewPlaceNotEmpty">Comment Cannot Be Empty</string>
+    <string name="viewPlaceCommentSend">Comment Posted..</string>
+    <string name="mapsDataNotFound">Data not found.</string>
+    <string name="success">Successful</string>
+    <string name="error">Error</string>
+    <string name="my_comments">My Comments</string>
+    <string name="passNoEmpty">Password must be longer than 6 digits.</string>
 </resources>

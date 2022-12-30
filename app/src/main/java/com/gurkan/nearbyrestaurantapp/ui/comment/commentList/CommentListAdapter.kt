@@ -1,112 +1,66 @@
-package com.gurkan.nearbyrestaurantapp.ui.recyclerView
+package com.gurkan.nearbyrestaurantapp.ui.comment.commentList
 
 
 import android.annotation.SuppressLint
+import android.content.Context
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.model.Place
+
 import com.google.android.libraries.places.api.net.*
 import com.gurkan.nearbyrestaurantapp.R
-import com.gurkan.nearbyrestaurantapp.databinding.ItemsBinding
-import com.gurkan.nearbyrestaurantapp.model.Result
+import com.gurkan.nearbyrestaurantapp.model.Comment
+import com.gurkan.nearbyrestaurantapp.ui.map.recyclerView.placesClient
 
 
-lateinit var placesClient: PlacesClient
+class CommentListAdapter(
+    private var commentList: ArrayList<Comment>,
+    private val context: Context
+) :
+    RecyclerView.Adapter<CommentListAdapter.MyViewHolder>() {
 
-class RecyclerViewAdapter :
-    RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder>() {
-    private var items = ArrayList<Result>()
+    class MyViewHolder(
+        private val view: View,
+    ) :
+        RecyclerView.ViewHolder(view) {
+        val placeName: TextView = view.findViewById(R.id.placeNameComment)
+        val placeComment: TextView = view.findViewById(R.id.placeComment)
+        val userName: TextView = view.findViewById(R.id.tbUser)
 
-
-    private lateinit var mListener: onItemClickListener
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun filterList(filter: ArrayList<Result>) {
-        items = filter
-        notifyDataSetChanged()
-
-    }
-
-    fun setPlacesList(item: ArrayList<Result>) {
-
-        this.items = item
-    }
-
-
-    interface onItemClickListener {
-        fun onItemClick(position: Int)
-    }
-
-    fun setOnClickListener(listener: onItemClickListener) {
-        mListener = listener
+        // val placeRating: RatingBar = view.findViewById(R.id.ratingBar)
+        val placeImage: ImageView = view.findViewById(R.id.commentImage)
 
 
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(
-            ItemsBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-
-                false
-            ), mListener
-        )
+        val view = LayoutInflater.from(parent.context)
+            .inflate(
+                R.layout.comment_items, parent, false
+            )
+        return MyViewHolder(view)
 
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        holder.placeName.text = commentList[position].placeName
+        holder.placeComment.text = commentList[position].placeComment
+        holder.userName.text = commentList[position].userName
+        getPhoto(commentList[position].placeId,holder.placeImage)
 
-
-        holder.bind(items[position])
-
-
-    }
-
-
-    override fun getItemCount() = items.size
-
-    class MyViewHolder(
-        private val binding: ItemsBinding,
-        listener: onItemClickListener
-    ) :
-        RecyclerView.ViewHolder(binding.root) {
-        // private val rnd = Random(1000)
-        fun bind(data: Result) {
-
-            binding.place = data
-            binding.ratingTextView.text = data.rating.toString()
-            getPhoto(data.place_id, binding.thubmImage)
-            if (data.business_status == "CLOSED_TEMPORARILY") {
-                binding.placeControl.setImageResource(R.drawable.closepng)
-            } else {
-                binding.placeControl.setImageResource(R.drawable.openpng)
-            }
-            /*    val color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
-                binding.cardView.setBackgroundColor(color)*/
-            binding.executePendingBindings()
-
-
-        }
-
-
-        init {
-
-            itemView.setOnClickListener {
-                listener.onItemClick(adapterPosition)
-
-
-            }
-
-        }
-
+        // holder.placeRating.rating=commentList[position].placeRating.toFloat()
 
     }
+
+
+    override fun getItemCount() = commentList.size
 
 
 }
