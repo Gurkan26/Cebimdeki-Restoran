@@ -14,7 +14,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.gurkan.nearbyrestaurantapp.databinding.FragmentLoginBinding
 import com.gurkan.nearbyrestaurantapp.ui.map.MapsActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.gurkan.nearbyrestaurantapp.R
+
 class FragmentLogin : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
@@ -24,6 +27,8 @@ class FragmentLogin : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+
         binding = FragmentLoginBinding.inflate(inflater, container, false)
 
         auth = FirebaseAuth.getInstance()
@@ -48,23 +53,22 @@ class FragmentLogin : Fragment() {
             }
             // giriş bilgileri doğruysa giriş işlemi burada dönecek
             else {
-                auth.signInWithEmailAndPassword(loginMail, loginPassword)
-                    .addOnCompleteListener(requireActivity()) {
-                        if (it.isSuccessful) {
-                            startActivity(
-                                Intent(
-                                    this@FragmentLogin.context,
-                                    MapsActivity::class.java
-                                )
-                            )
-                        } else {
-                            Toast.makeText(
-                                requireContext(),
-                                getString(R.string.loginTryAgain),
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
+                loginViewModel.loginResult.observe(viewLifecycleOwner, Observer {
+                    if (it == true) {
+                        // Giriş başarılı, MapsActivity'e yönlendirin
+                        val intent = Intent(requireActivity(), MapsActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        // Giriş başarısız, bir Toast mesajı gösterin
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.loginTryAgain),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
+                })
+
+
             }
 
         }

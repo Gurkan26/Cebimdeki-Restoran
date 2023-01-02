@@ -31,7 +31,6 @@ class PlaceCommentActivity : AppCompatActivity() {
         getCommentData()
 
     }
-
     private fun getCommentData() {
 
         dbref = FirebaseDatabase.getInstance().getReference("Comments")

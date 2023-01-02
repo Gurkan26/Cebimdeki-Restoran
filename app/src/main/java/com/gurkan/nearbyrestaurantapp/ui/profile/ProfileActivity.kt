@@ -19,7 +19,6 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var navController: NavController
 lateinit var binding:ActivityProfileBinding
 
-
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -78,7 +78,6 @@ class ViewPlace : AppCompatActivity(),
         lastLocLat = bundle.getDouble("lastLocationLat")
         lastLocLng = bundle.getDouble("lastLocationLong")
         var placeId = bundle.getString("placeId")
-        // imageBitmap = bundle.getByteArray("imageBitmap")
         rating.rating = ratingBarSet.toFloat()
         destLatLng = LatLng(destLocLat, destLocLng)
         lastLatLng = LatLng(lastLocLat, lastLocLng)

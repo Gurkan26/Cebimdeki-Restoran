@@ -38,8 +38,6 @@ class CommentListAdapter(
 
 
     }
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(
@@ -58,18 +56,12 @@ class CommentListAdapter(
         // holder.placeRating.rating=commentList[position].placeRating.toFloat()
 
     }
-
-
     override fun getItemCount() = commentList.size
-
-
 }
 
 private fun getPhoto(placeId: String, imageView: ImageView) {
 
 // Define a Place ID.
-
-
 // Specify fields. Requests for photos must always have the PHOTO_METADATAS field.
     val fields = listOf(Place.Field.PHOTO_METADATAS)
 

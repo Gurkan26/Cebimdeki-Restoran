@@ -45,7 +45,6 @@ import java.util.*
 private lateinit var binding: ActivityMapsBinding
 private lateinit var mMap: GoogleMap
 private lateinit var mLastLocation: Location
-private var view: View? = null
 
 @SuppressLint("StaticFieldLeak")
 lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -191,7 +190,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             Place.Field.PHONE_NUMBER,
             Place.Field.RATING
         )
-
         val request = FetchPlaceRequest.newInstance(placeId, placeFields)
 
         placesClient.fetchPlace(request).addOnSuccessListener { response: FetchPlaceResponse ->
@@ -217,8 +215,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 TODO("Handle error with given status code")
             }
         }
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

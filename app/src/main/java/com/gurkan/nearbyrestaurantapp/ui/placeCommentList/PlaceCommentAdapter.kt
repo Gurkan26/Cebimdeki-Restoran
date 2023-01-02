@@ -44,8 +44,6 @@ class PlaceCommentAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(
@@ -65,10 +63,7 @@ class PlaceCommentAdapter(
             commentList[position].placeId,
             holder.placeImage
         )
-
-
-        // Glide.with(context).load(commentList[position].placeImage).into(holder.placeImage)
-        // holder.placeRating.rating=commentList[position].placeRating.toFloat()
+    // holder.placeRating.rating=commentList[position].placeRating.toFloat()
 
     }
 
