@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -16,10 +17,7 @@ import com.gurkan.nearbyrestaurantapp.R
 import com.gurkan.nearbyrestaurantapp.databinding.FragmentRegisterBinding
 
 class FragmentRegister : Fragment() {
-
-    private lateinit var auth: FirebaseAuth
-    var databaseReference: DatabaseReference? = null
-    var database: FirebaseDatabase? = null
+    private lateinit var viewModel: RegisterViewModel
     lateinit var binding: FragmentRegisterBinding
 
     override fun onCreateView(
@@ -27,60 +25,28 @@ class FragmentRegister : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
-        auth = FirebaseAuth.getInstance()
-        database = FirebaseDatabase.getInstance()
-        databaseReference = database?.reference!!.child("profile")
+
+        viewModel = ViewModelProvider(this)[RegisterViewModel::class.java]
+
+        viewModel.fullName.observe(viewLifecycleOwner, Observer {
+            binding.tbFullName.setText(it)
+        })
+        viewModel.email.observe(viewLifecycleOwner, Observer {
+            binding.tbEmail.setText(it)
+        })
+        viewModel.password.observe(viewLifecycleOwner, Observer {
+            binding.tbPassword.setText(it)
+        })
 
         binding.registerButton.setOnClickListener {
-            var fullName = binding.tbFullName.text.toString()
-            var eMail = binding.tbEmail.text.toString()
-            var password = binding.tbPassword.text.toString()
-
-            if (TextUtils.isEmpty(fullName)) {
-                binding.tbFullName.error = getString(R.string.loginNotEmpty)
-                return@setOnClickListener
-            } else if (TextUtils.isEmpty(eMail)) {
-                binding.tbEmail.error = getString(R.string.loginNotEmpty)
-                return@setOnClickListener
-            } else if (TextUtils.isEmpty(password)) {
-                binding.tbPassword.error = getString(R.string.passNoEmpty)
-                return@setOnClickListener
-            }
-            else{
-
-            // Kullanıcı bilgilerini Firebase'e atma
-            auth.createUserWithEmailAndPassword(
-                binding.tbEmail.text.toString(),
-                binding.tbPassword.text.toString()
-            ) //Auth kısmına kullanıcıyı ekledim.
-                .addOnCompleteListener(requireActivity()) { task ->
-                    if (task.isSuccessful) {
-                        //Kullanıcının bilgilerini Firebase idsini kullanarak ekliyoz
-
-                        var currentUser = auth.currentUser
-                        var currentUserDb = currentUser?.let { it1 ->
-                            databaseReference?.child(it1.uid) // database reference ile bi child oluşturduk. ve bu childin kullanıcı idsini burada aldım.
-                        }
-                        currentUserDb?.child("fullName")
-                            ?.setValue(binding.tbFullName.text.toString())
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.success),
-                            Toast.LENGTH_LONG
-                        ).show()
-                        findNavController().navigate(FragmentRegisterDirections.actionFragmentRegisterToFragmentLogin())
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.error),
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                    }
-                }
-            }
-
+            val fullName = viewModel.fullName.value
+            val email = viewModel.email.value
+            val password = viewModel.password.value
+            viewModel.signUp(fullName!!, email!!, password!!)
         }
+
+
+
         binding.tbSignInNow.setOnClickListener {
             findNavController().navigate(FragmentRegisterDirections.actionFragmentRegisterToFragmentLogin())
         }
