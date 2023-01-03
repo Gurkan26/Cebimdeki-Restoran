@@ -26,18 +26,6 @@ class CommentActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        var getData = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-
-        }
-
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(
             BottomNavigationView.OnNavigationItemSelectedListener { item ->
                 when (item.itemId) {

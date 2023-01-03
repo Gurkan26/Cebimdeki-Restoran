@@ -1,5 +1,6 @@
 package com.gurkan.nearbyrestaurantapp.ui.forgotPassword
 
+import android.content.ContentResolver
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
@@ -12,12 +13,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.gurkan.nearbyrestaurantapp.R
 import com.gurkan.nearbyrestaurantapp.databinding.FragmentForgotPasswordBinding
 
-
 class FragmentForgotPassword : Fragment() {
+    private val contentResolver: ContentResolver = requireActivity().contentResolver
+    private lateinit var binding: FragmentForgotPasswordBinding
+    private val viewModel = ForgotPasswordViewModel(contentResolver)
 
-
-    lateinit var binding: FragmentForgotPasswordBinding
-    private lateinit var auth: FirebaseAuth
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -25,21 +25,12 @@ class FragmentForgotPassword : Fragment() {
 
         binding = FragmentForgotPasswordBinding.inflate(inflater, container, false)
 
-        auth = FirebaseAuth.getInstance()
-
         binding.btnReset.setOnClickListener {
-            var pResetMail = binding.tbLoginInput.text.toString().trim()
-            if (TextUtils.isEmpty(pResetMail)) {
+            if (TextUtils.isEmpty(binding.tbLoginInput.text.toString().trim())) {
                 binding.tbLoginInput.error = getString(R.string.forgotPassCannotEmpty)
-            } else{
-                auth.sendPasswordResetEmail(pResetMail)
-                    .addOnCompleteListener(requireActivity()){resetMail->
-                        if (resetMail.isSuccessful){
-                            Toast.makeText(requireContext(),getString(R.string.forgotPassResetLink),Toast.LENGTH_LONG).show()
-                        }else{
-                            Toast.makeText(requireContext(),getString(R.string.forgotPassSendFailed),Toast.LENGTH_LONG).show()
-                        }
-                    }
+            } else {
+                viewModel.email.value = binding.tbLoginInput.text.toString().trim()
+                viewModel.sendPasswordResetEmail()
             }
         }
         binding.btnLoginPage.setOnClickListener {
@@ -48,6 +39,4 @@ class FragmentForgotPassword : Fragment() {
 
         return binding.root
     }
-
-
 }
