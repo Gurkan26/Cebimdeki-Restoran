@@ -6,18 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.gurkan.nearbyrestaurantapp.R
 import com.gurkan.nearbyrestaurantapp.databinding.FragmentUpdateBinding
+import com.gurkan.nearbyrestaurantapp.ui.profile.ProfileViewModel
 
 class FragmentUpdate : Fragment() {
 
-    lateinit var binding: FragmentUpdateBinding
-    private lateinit var auth: FirebaseAuth
-    private var databaseReference: DatabaseReference? = null
-    private var database: FirebaseDatabase? = null
-
+    private lateinit var binding: FragmentUpdateBinding
+    private lateinit var viewModel: ProfileViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,86 +25,27 @@ class FragmentUpdate : Fragment() {
     ): View? {
         binding = FragmentUpdateBinding.inflate(inflater, container, false)
 
-        auth = FirebaseAuth.getInstance()
-        database = FirebaseDatabase.getInstance()
-        databaseReference = database?.reference!!.child("profile")
-
-
-        var currentUser = auth.currentUser
-        binding.tbUpdateEmail.setText(currentUser?.email)
-
-        var userReference = databaseReference?.child(currentUser?.uid!!)
-        userReference?.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-
-                binding.tbUpdateFullName.setText(snapshot.child("fullName").value.toString())
-
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
+        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+        viewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
+        viewModel.getUser(userId)
+        viewModel.user.observe(viewLifecycleOwner, Observer { user ->
+            binding.tbUpdateEmail.setText(user.email)
+            binding.tbUpdateFullName.setText(user.fullName)
         })
 
         binding.buttonUpdate.setOnClickListener {
-            var updateMail = binding.tbUpdateEmail.text.toString().trim()
-            currentUser!!.updateEmail(updateMail)
-                .addOnCompleteListener { task ->
+            val email = binding.tbUpdateEmail.text.toString().trim()
+            viewModel.updateEmail(email, requireContext())
 
-                    if (task.isSuccessful) {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.updateEmailSucc),
-                            Toast.LENGTH_LONG
-                        ).show()
+            val password = binding.tbUpdatePassword.text.toString().trim()
+            if (password.isNotEmpty()) {
+                viewModel.updatePassword(password, requireContext())
+            }
 
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.updateEmailError),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-
-                }
-
-            //Parola Güncelleme
-
-            var updatePassword = binding.tbUpdatePassword.text.toString().trim()
-            currentUser.updatePassword(updatePassword)
-                .addOnCompleteListener { task ->
-
-                    if (task.isSuccessful) {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.updatePasswordSucc),
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.updatePasswordError),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-
-                }
-
-            //Ad-Soyad Güncelleme
-
-            var currentUserDb = currentUser?.let { it1 -> databaseReference?.child(it1.uid) }
-            currentUserDb?.removeValue() // Id değerini kaldırıyoruz ve yeni bir isim ataması yapıyoruz.
-            currentUserDb?.child("fullName")?.setValue(binding.tbUpdateFullName.text.toString())
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.updateFullNameSuccess),
-                Toast.LENGTH_LONG
-            ).show()
+            val fullName = binding.tbUpdateFullName.text.toString().trim()
+            viewModel.updateFullName(fullName, requireContext())
         }
 
         return binding.root
     }
-
 }
