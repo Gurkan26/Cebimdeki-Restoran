@@ -33,9 +33,6 @@ Nearby Restaurant uses a number of frameworks to work properly:
    [Google Place API]: <https://developers.google.com/maps/documentation/places/android-sdk/overview>
    [Google Directions API]: <https://developers.google.com/maps/documentation/directions/overview>
 
-# Building
-The app uses CocoaPods to manage dependencies, so be sure and complete the following steps to build and run the app.
-
 ##### Clone the Repo Locally
 ```Bash
 gh repo clone OrionInnovationTRTech/NearbyRestaurant
