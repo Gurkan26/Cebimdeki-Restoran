@@ -21,7 +21,7 @@ Nearby Restaurant uses a number of frameworks to work properly:
 
 ## Images
 
-<img src="https://im2.ezgif.com/tmp/ezgif-2-020b98fed8.gif" width="276" height="597" /> 
+<img src="https://media3.giphy.com/media/M4BNpBGyEEFg2ybKjM/giphy.gif?cid=790b7611c6806daac50f766baf2f246e726bab51f4e57522&rid=giphy.gif&ct=g" width="276" height="597" /> 
 <img src="https://i.ibb.co/tmcqZQd/screenshot-1672675753634.png" width="276" height="597" /> 
 <img src="https://i.ibb.co/yhR3mDB/screenshot-1672670806644.png" width="276" height="700" /> 
 <img src="https://i.ibb.co/MGpJkCZ/forgot-password-ekran.png" width="276" height="700" /> 
