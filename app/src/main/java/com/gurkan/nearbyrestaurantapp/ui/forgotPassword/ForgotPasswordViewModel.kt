@@ -16,8 +16,8 @@ class ForgotPasswordViewModel(private val context: ContentResolver) : ViewModel(
     private val auth = FirebaseAuth.getInstance()
 
     val email = MutableLiveData<String>()
-    val successMessage = MutableLiveData<String>()
-    val errorMessage = MutableLiveData<String>()
+    private val successMessage = MutableLiveData<String>()
+    private val errorMessage = MutableLiveData<String>()
 
     @SuppressLint("RestrictedApi")
     fun sendPasswordResetEmail() {

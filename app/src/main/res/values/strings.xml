@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Nearby Restaurant</string>
     <string name="title_activity_maps">Nearby Restaurant</string>
-    <string name="api_key">AIzaSyBE8gaA7812Rqnj37POyC78iQans59WHpg</string>
+    <string name="api_key">API_KEY</string>
     <string name="hello_fragment">hello_fragment</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
