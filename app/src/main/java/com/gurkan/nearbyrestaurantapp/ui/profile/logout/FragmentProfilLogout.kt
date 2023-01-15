@@ -1,12 +1,14 @@
 package com.gurkan.nearbyrestaurantapp.ui.profile.logout
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -14,14 +16,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.gurkan.nearbyrestaurantapp.MainActivity
 import com.gurkan.nearbyrestaurantapp.R
 import com.gurkan.nearbyrestaurantapp.databinding.FragmentProfilLogoutBinding
+import com.gurkan.nearbyrestaurantapp.model.firebase.ProfileModel
 import com.gurkan.nearbyrestaurantapp.ui.profile.ProfileViewModel
+import com.gurkan.nearbyrestaurantapp.ui.profile.ProfileViewModelFactory
 
 var specialuserName = ""
 
 class FragmentProfilLogout : Fragment() {
 
     private lateinit var binding: FragmentProfilLogoutBinding
-    private lateinit var viewModel: ProfileViewModel
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -32,11 +35,16 @@ class FragmentProfilLogout : Fragment() {
         binding = FragmentProfilLogoutBinding.inflate(inflater, container, false)
 
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
-        viewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
-        viewModel.getUser(userId)
-        viewModel.user.observe(viewLifecycleOwner, Observer { user ->
-            binding.tbMail.text = R.string.email_address.toString() + " " + user.email
-            binding.tbFullName.text = R.string.full_name.toString() + " " + user.fullName
+        var userEmail= FirebaseAuth.getInstance()
+
+        val profileModel = ProfileModel()
+        val profileViewModel: ProfileViewModel by viewModels {
+            ProfileViewModelFactory(profileModel)
+        }
+        profileViewModel.getUser(userId)
+        profileViewModel.user.observe(viewLifecycleOwner, Observer { user ->
+            binding.tbMail.text = userEmail.currentUser?.email
+            binding.tbFullName.text = user.fullName
             specialuserName = user.fullName
         })
 
@@ -56,3 +64,6 @@ class FragmentProfilLogout : Fragment() {
         return binding.root
     }
 }
+
+
+

@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Cebimdeki Restoran</string>
     <string name="title_activity_maps">Cebimdeki Restoran</string>
-    <string name="api_key">AIzaSyBQ2tXz0E6sUrRUrZtzhBZiF4dmspgMFW0</string>
+    <string name="api_key">AIzaSyBE8gaA7812Rqnj37POyC78iQans59WHpg</string>
     <string name="hello_fragment">hello_fragment</string>
     <string name="loginButton">Giriş</string>
     <string name="registerSignUp">Kayıt Ol</string>

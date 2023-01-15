@@ -34,15 +34,15 @@ class FragmentLogin : Fragment() {
         auth = FirebaseAuth.getInstance()
         // Kullanıcının oturum açıp açmadığını kontrol ediyoruz
 
-        var currentUser = auth.currentUser
+        val currentUser = auth.currentUser
         if (currentUser != null) { // giriş yapılmışsa maps activitye yönlendir.
             val maps = Intent(requireActivity(), MapsActivity::class.java)
             startActivity(maps)
         }
         // Giriş yap butonuna tıkladığında
         binding.buttonLogin.setOnClickListener {
-            var loginMail = binding.tbLoginMail.text.toString()
-            var loginPassword = binding.tbLoginPassword.text.toString()
+            val loginMail = binding.tbLoginMail.text.toString()
+            val loginPassword = binding.tbLoginPassword.text.toString()
 
             if (TextUtils.isEmpty(loginMail)) {
                 binding.tbLoginMail.error = getString(R.string.loginNotEmpty)
@@ -55,6 +55,7 @@ class FragmentLogin : Fragment() {
             else {
                 loginViewModel.loginResult.observe(viewLifecycleOwner, Observer {
                     if (it == true) {
+
                         // Giriş başarılı, MapsActivity'e yönlendirin
                         val intent = Intent(requireActivity(), MapsActivity::class.java)
                         startActivity(intent)

@@ -9,17 +9,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 class RegisterViewModel : ViewModel() {
-    private val _fullName = MutableLiveData<String>()
-    val fullName: LiveData<String>
-        get() = _fullName
-
-    private val _email = MutableLiveData<String>()
-    val email: LiveData<String>
-        get() = _email
-
-    private val _password = MutableLiveData<String>()
-    val password: LiveData<String>
-        get() = _password
 
     private val auth = FirebaseAuth.getInstance()
 
@@ -34,6 +23,7 @@ class RegisterViewModel : ViewModel() {
                         val databaseReference = database.reference.child("profile")
                         databaseReference.child(it.uid).child("fullName").setValue(fullName)
                     }
+
                 }
             }
     }

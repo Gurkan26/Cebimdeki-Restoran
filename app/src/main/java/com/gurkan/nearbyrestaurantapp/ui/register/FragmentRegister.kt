@@ -28,21 +28,13 @@ class FragmentRegister : Fragment() {
 
         viewModel = ViewModelProvider(this)[RegisterViewModel::class.java]
 
-        viewModel.fullName.observe(viewLifecycleOwner, Observer {
-            binding.tbFullName.setText(it)
-        })
-        viewModel.email.observe(viewLifecycleOwner, Observer {
-            binding.tbEmail.setText(it)
-        })
-        viewModel.password.observe(viewLifecycleOwner, Observer {
-            binding.tbPassword.setText(it)
-        })
 
         binding.registerButton.setOnClickListener {
-            val fullName = viewModel.fullName.value
-            val email = viewModel.email.value
-            val password = viewModel.password.value
-            viewModel.signUp(fullName!!, email!!, password!!)
+            val fullName = binding.tbFullName.text.toString()
+            val email = binding.tbEmail.text.toString()
+            val password = binding.tbPassword.text.toString()
+            viewModel.signUp(fullName, email, password)
+            findNavController().navigate(FragmentRegisterDirections.actionFragmentRegisterToFragmentLogin())
         }
 
 

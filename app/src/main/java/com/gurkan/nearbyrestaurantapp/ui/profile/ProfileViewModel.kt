@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.gurkan.nearbyrestaurantapp.R
 import com.gurkan.nearbyrestaurantapp.model.firebase.ProfileModel
 import com.gurkan.nearbyrestaurantapp.model.firebase.User
@@ -21,7 +22,7 @@ class ProfileViewModel(private val profileModel: ProfileModel) :
                 _user.value = user
             },
             onFailure = {
-                // Kullanıcı bilgileri çekilirken hata oluştu. Hata işleme yapın.
+                // Kullanıcı bilgileri çekilirken hata oluştu. Hata işleme yap.
             }
         )
     }
@@ -37,7 +38,7 @@ class ProfileViewModel(private val profileModel: ProfileModel) :
         )
     }
 
-    fun updatePassword(password: String, context: Context) {
+     fun updatePassword(password: String, context: Context) {
         profileModel.updatePassword(password,
             onSuccess = {
                 Toast.makeText(context, R.string.updatePasswordSucc, Toast.LENGTH_LONG).show()
@@ -57,5 +58,12 @@ class ProfileViewModel(private val profileModel: ProfileModel) :
                 Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
             }
         )
+    }
+}
+
+class ProfileViewModelFactory(private val profileModel: ProfileModel) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return ProfileViewModel(profileModel) as T
     }
 }

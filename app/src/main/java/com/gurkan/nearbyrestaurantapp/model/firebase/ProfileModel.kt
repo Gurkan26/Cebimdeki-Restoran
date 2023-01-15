@@ -14,12 +14,14 @@ class User {
 class ProfileModel {
     fun getUser(userId: String, onSuccess: (User) -> Unit, onFailure: () -> Unit) {
         val databaseReference =
-            FirebaseDatabase.getInstance().reference!!.child("profile").child(userId)
+            FirebaseDatabase.getInstance().reference.child("profile").child(userId)
         databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val user = snapshot.getValue(User::class.java)
                 if (user != null) {
+                    user.fullName
                     onSuccess(user)
+
                 } else {
                     onFailure()
                 }
@@ -58,7 +60,7 @@ class ProfileModel {
     fun updateFullName(fullName: String, onSuccess: () -> Unit, onFailure: () -> Unit) {
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
         val databaseReference =
-            FirebaseDatabase.getInstance().reference!!.child("profile").child(userId)
+            FirebaseDatabase.getInstance().reference.child("profile").child(userId)
         databaseReference.child("fullName").setValue(fullName)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {

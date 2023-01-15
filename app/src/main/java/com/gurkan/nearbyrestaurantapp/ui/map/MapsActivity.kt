@@ -430,4 +430,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onDestroy()
     }
 
+    override fun onBackPressed() {
+        // Geri tuşuna basıldığında bir şey yapılmasın.
+    }
+
 }
