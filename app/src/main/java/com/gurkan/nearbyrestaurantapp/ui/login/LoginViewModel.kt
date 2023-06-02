@@ -13,7 +13,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     init {
         val auth = FirebaseAuth.getInstance()
         repository = LoginRepository(auth)
-        loginResult = repository.loginResult
+        loginResult = repository.loginResult as MutableLiveData<Boolean>
     }
 
     fun login(email: String, password: String) {

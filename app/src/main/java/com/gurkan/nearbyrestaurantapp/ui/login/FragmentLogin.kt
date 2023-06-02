@@ -52,25 +52,19 @@ class FragmentLogin : Fragment() {
                 return@setOnClickListener
             }
             // giriş bilgileri doğruysa giriş işlemi burada dönecek
+            // giriş bilgileri doğruysa giriş işlemi burada dönecek
             else {
-                loginViewModel.loginResult.observe(viewLifecycleOwner, Observer {
-                    if (it == true) {
-
-                        // Giriş başarılı, MapsActivity'e yönlendirin
+                loginViewModel.login(loginMail, loginPassword)
+                loginViewModel.loginResult.observe(viewLifecycleOwner, Observer { result ->
+                    if (result == true) {
                         val intent = Intent(requireActivity(), MapsActivity::class.java)
                         startActivity(intent)
                     } else {
-                        // Giriş başarısız, bir Toast mesajı gösterin
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.loginTryAgain),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(requireContext(), "Giriş yapılamadı. Kullanıcı adı ve/veya şifre yanlış.", Toast.LENGTH_SHORT).show()
                     }
                 })
-
-
             }
+
 
         }
 
